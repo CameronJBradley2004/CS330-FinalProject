@@ -7,14 +7,14 @@
 using namespace std;
 typedef vector<vector<int>> Matrix;
 Matrix createMatrix(int, int);
-Matrix Naivemultiply(const Matrix, const Matrix);
-Matrix add(const Matrix, const Matrix);
-Matrix subtract(const Matrix, const Matrix);
-Matrix strassen(const Matrix, const Matrix);
-Matrix padMatrix(const Matrix, int);
-Matrix unpadMatrix(const Matrix, int, int);
-void printMatrix(const Matrix, const string);
-Matrix strassenMultiplyAnySize(const Matrix, const Matrix);
+Matrix Naivemultiply(const Matrix&, const Matrix&);
+Matrix add(const Matrix&, const Matrix&);
+Matrix subtract(const Matrix&, const Matrix&);
+Matrix strassen(const Matrix&, const Matrix&);
+Matrix padMatrix(const Matrix&, int);
+Matrix unpadMatrix(const Matrix&, int, int);
+void printMatrix(const Matrix&, const string);
+Matrix strassenMultiplyAnySize(const Matrix&, const Matrix&);
 
 
 // Convert your existing matrices to `Matrix` type and call `strassenMultiplyAnySize`
