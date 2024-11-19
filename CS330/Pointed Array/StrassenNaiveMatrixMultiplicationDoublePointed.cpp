@@ -5,8 +5,89 @@
 #include <chrono>
 #include <cstdlib>
 
+//Function prototypes to make the main easier to read
 using namespace std;
+int** createArray(int, int);
+void fillArray(int**, int, int, int);
+void deleteMatrix(int**, int);
+int** Naivemultiply(int**, int**, int);
+int** add(int**, int**, int);
+int** subtract(int**, int**, int);
+int** strassen(int**, int**, int);
+int** strassenMultiplyAnySize(int**, int**, int, int, int);
 
+
+
+int main() {
+    srand(time(0));
+    int FirstHeight, FirstWidth, SecondWidth, hi;
+
+    //Getting input from the user for the FirstHeight, FirstWidth, SecondWidth, and hi (max random number)
+    std::cout << "Enter First Matrix Height: ";
+    cin >> FirstHeight;
+    std::cout << "Enter First Matrix Width: ";
+    cin >> FirstWidth;
+    std::cout << "Enter Second Matrix Width: ";
+    cin >> SecondWidth;
+    std::cout << "Enter the highest number in the arrays to be: ";
+    cin >> hi;
+
+    //Height of second matrix has to be equal to the width of the first one
+    int SecondHeight = FirstWidth;
+
+    //Initializing the two arrays
+    int **FirstMatrix = createArray(FirstHeight, FirstWidth);
+    int **SecondMatrix = createArray(SecondHeight, SecondWidth);
+
+    //Filling the two arrays with random numbers at or below the hi
+    fillArray(FirstMatrix, FirstHeight, FirstWidth, hi);
+    fillArray(SecondMatrix, SecondHeight, SecondWidth, hi);
+
+    //Starting the clock to track how long it takes 
+    auto start = chrono::high_resolution_clock::now();
+
+    //Multiplying the matrices and storing the resulting matrix in ResultMatrix
+    int **ResultMatrix = strassenMultiplyAnySize(FirstMatrix, SecondMatrix, FirstHeight, FirstWidth, SecondWidth);
+
+    //Stopping the clock and recording how long it took
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+    //Print all three matrix
+    cout << "\n\n\n Printing first matrix: " << endl;
+     for (int i = 0; i < FirstHeight; ++i) {
+        for (int j = 0; j < FirstWidth; ++j) {
+            cout << FirstMatrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "\n Printing second matrix: " << endl;
+     for (int i = 0; i < SecondHeight; ++i) {
+        for (int j = 0; j < SecondWidth; ++j) {
+            cout << SecondMatrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "\n Printing results matrix: " << endl;
+     for (int i = 0; i < FirstHeight; ++i) {
+        for (int j = 0; j < SecondWidth; ++j) {
+            cout << ResultMatrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    //Output the time it took
+    std::cout << "\n Completed in " << duration.count() << " seconds.\n";
+
+    // Clean up memory
+    deleteMatrix(FirstMatrix, FirstHeight);
+    deleteMatrix(SecondMatrix, SecondHeight);
+    deleteMatrix(ResultMatrix, FirstHeight);
+
+    return 0;
+}
+
+//Takes the height and width and starts by making the number of rows that it needs and then creates "columns" by extending the rows based on how many it needs
 int** createArray(int height, int width){
     int **array = new int*[height];
     for (int i = 0; i < height; ++i) {
@@ -151,65 +232,4 @@ int** strassenMultiplyAnySize(int** A, int** B, int FirstHeight, int FirstWidth,
     deleteMatrix(paddedB, newSize);
 
     return paddedC;
-}
-
-int main() {
-    srand(time(0));
-    int FirstHeight, FirstWidth, SecondWidth, hi;
-
-    std::cout << "Enter First Matrix Height: ";
-    cin >> FirstHeight;
-    std::cout << "Enter First Matrix Width: ";
-    cin >> FirstWidth;
-    std::cout << "Enter Second Matrix Width: ";
-    cin >> SecondWidth;
-    std::cout << "Enter the highest number in the arrays to be: ";
-    cin >> hi;
-    
-    int SecondHeight = FirstWidth;
-
-    int **FirstMatrix = createArray(FirstHeight, FirstWidth);
-    int **SecondMatrix = createArray(SecondHeight, SecondWidth);
-
-    fillArray(FirstMatrix, FirstHeight, FirstWidth, hi);
-    fillArray(SecondMatrix, SecondHeight, SecondWidth, hi);
-
-    auto start = chrono::high_resolution_clock::now();
-
-    int **ResultMatrix = strassenMultiplyAnySize(FirstMatrix, SecondMatrix, FirstHeight, FirstWidth, SecondWidth);
-
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-
-    //Print all three matrix
-    cout << "\n\n\n Printing first matrix: " << endl;
-     for (int i = 0; i < FirstHeight; ++i) {
-        for (int j = 0; j < FirstWidth; ++j) {
-            cout << FirstMatrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "\n Printing second matrix: " << endl;
-     for (int i = 0; i < SecondHeight; ++i) {
-        for (int j = 0; j < SecondWidth; ++j) {
-            cout << SecondMatrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "\n Printing results matrix: " << endl;
-     for (int i = 0; i < FirstHeight; ++i) {
-        for (int j = 0; j < SecondWidth; ++j) {
-            cout << ResultMatrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-
-    std::cout << "\n Completed in " << duration.count() << " seconds.\n";
-
-    // Clean up memory
-    deleteMatrix(FirstMatrix, FirstHeight);
-    deleteMatrix(SecondMatrix, SecondHeight);
-    deleteMatrix(ResultMatrix, FirstHeight);
-
-    return 0;
 }
