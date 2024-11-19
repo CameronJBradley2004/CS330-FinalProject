@@ -4,7 +4,79 @@
 #include <algorithm>
 #include <cstdlib>
 
+// Function prototypes so the main can be read easier
 using namespace std;
+int** createMatrix(int, int);
+void deleteMatrix(int**, int);
+int** add(int**, int**, int);
+int** subtract(int**, int**, int);
+int** strassen(int**, int**, int);
+int** padMatrix(int**, int, int, int);
+int** unpadMatrix(int**, int, int);
+int** strassenMultiplyAnySize(int**, int**, int, int, int);
+
+int main() {
+    srand(time(0));
+    int FirstHeight, FirstWidth, SecondWidth, hi;
+
+    cout << "Enter the height of the first matrix: ";
+    cin >> FirstHeight;
+    cout << "Enter the width of the first matrix: ";
+    cin >> FirstWidth;
+    cout << "Enter the width of the second matrix: ";
+    cin >> SecondWidth;
+    cout << "Enter the highest number in the arrays to be: ";
+    cin >> hi;
+    int SecondHeight = FirstWidth;
+    
+    int** A = createMatrix(FirstHeight, FirstWidth);
+    int** B = createMatrix(FirstWidth, SecondWidth);
+
+    // Initialize matrices A and B
+    for (int i = 0; i < FirstHeight; ++i)
+        for (int j = 0; j < FirstWidth; ++j)
+            A[i][j] = rand() % hi + 0;  // Sample values for A
+    for (int i = 0; i < FirstWidth; ++i)
+        for (int j = 0; j < SecondWidth; ++j)
+            B[i][j] = rand() % hi + 0;  // Sample values for B
+
+    auto start = chrono::high_resolution_clock::now();
+    int** C = strassenMultiplyAnySize(A, B, FirstHeight, FirstWidth, SecondWidth);
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+    //Print all three matrix
+    cout << "\n\n\n Printing first matrix: " << endl;
+     for (int i = 0; i < FirstHeight; ++i) {
+        for (int j = 0; j < FirstWidth; ++j) {
+            cout << A[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "\n Printing second matrix: " << endl;
+     for (int i = 0; i < SecondHeight; ++i) {
+        for (int j = 0; j < SecondWidth; ++j) {
+            cout << B[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "\n Printing results matrix: " << endl;
+     for (int i = 0; i < FirstHeight; ++i) {
+        for (int j = 0; j < SecondWidth; ++j) {
+            cout << C[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Matrix multiplication completed in " << duration.count() << " seconds.\n";
+
+    // Free matrices
+    deleteMatrix(A, FirstHeight);
+    deleteMatrix(B, FirstWidth);
+    deleteMatrix(C, FirstHeight);
+
+    return 0;
+}
 
 // Helper function to create an empty matrix of given size
 int** createMatrix(int rows, int cols) {
@@ -143,67 +215,4 @@ int** strassenMultiplyAnySize(int** A, int** B, int FirstHeight, int FirstWidth,
     deleteMatrix(paddedC, newSize);
 
     return result;
-}
-
-int main() {
-    srand(time(0));
-    int FirstHeight, FirstWidth, SecondWidth, hi;
-
-    cout << "Enter the height of the first matrix: ";
-    cin >> FirstHeight;
-    cout << "Enter the width of the first matrix: ";
-    cin >> FirstWidth;
-    cout << "Enter the width of the second matrix: ";
-    cin >> SecondWidth;
-    cout << "Enter the highest number in the arrays to be: ";
-    cin >> hi;
-    int SecondHeight = FirstWidth;
-    
-    int** A = createMatrix(FirstHeight, FirstWidth);
-    int** B = createMatrix(FirstWidth, SecondWidth);
-
-    // Initialize matrices A and B
-    for (int i = 0; i < FirstHeight; ++i)
-        for (int j = 0; j < FirstWidth; ++j)
-            A[i][j] = rand() % hi + 0;  // Sample values for A
-    for (int i = 0; i < FirstWidth; ++i)
-        for (int j = 0; j < SecondWidth; ++j)
-            B[i][j] = rand() % hi + 0;  // Sample values for B
-
-    auto start = chrono::high_resolution_clock::now();
-    int** C = strassenMultiplyAnySize(A, B, FirstHeight, FirstWidth, SecondWidth);
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-
-    //Print all three matrix
-    cout << "\n\n\n Printing first matrix: " << endl;
-     for (int i = 0; i < FirstHeight; ++i) {
-        for (int j = 0; j < FirstWidth; ++j) {
-            cout << A[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "\n Printing second matrix: " << endl;
-     for (int i = 0; i < SecondHeight; ++i) {
-        for (int j = 0; j < SecondWidth; ++j) {
-            cout << B[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "\n Printing results matrix: " << endl;
-     for (int i = 0; i < FirstHeight; ++i) {
-        for (int j = 0; j < SecondWidth; ++j) {
-            cout << C[i][j] << " ";
-        }
-        cout << endl;
-    }
-
-    cout << "Matrix multiplication completed in " << duration.count() << " seconds.\n";
-
-    // Free matrices
-    deleteMatrix(A, FirstHeight);
-    deleteMatrix(B, FirstWidth);
-    deleteMatrix(C, FirstHeight);
-
-    return 0;
 }
