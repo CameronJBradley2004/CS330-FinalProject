@@ -28,7 +28,7 @@
 
 ## Results of these problems
   ### Using a combination
-  Because of the memory restrictions the goal was to still try to use the Strassen algroithm to take advantage of it's better time complexity while still allowing the program to be faster than just the naive. Currently in the program there is a cutoff (Where is switches frrom Strassen to Naive) at <= 64x64 matrix size. I picked this size arbitrarily so I think this would also be a good thing to record some data on and see how it affects the time by moving it up or down.
+  Because of the memory restrictions the goal was to still try to use the Strassen algroithm to take advantage of it's better time complexity while still allowing the program to be faster than just the naive. Currently in the program there is a cutoff (Where it switches frrom Strassen to Naive) at <= 64x64 matrix size. I picked this size arbitrarily so I think this would also be a good thing to record some data on and see how it affects the time by moving it up or down.
   <br>
   <br> [Strassen Naive Mix Vectored](CS330/Vectored/StressenNaiveMatrixMultiplicationVectored.cpp)
   <br> [Strassen Naive Mix Pointed](CS330/Pointed-Array/StressenNaiveMatrixMultiplicationDoublePointed.cpp)
