@@ -5,8 +5,65 @@
 #include <chrono>
 
 using namespace std;
-
 typedef vector<vector<int>> Matrix;
+Matrix createMatrix(int, int)
+Matrix add(const Matrix, const Matrix)
+Matrix subtract(const Matrix, const Matrix)
+Matrix strassen(const Matrix, const Matrix)
+Matrix padMatrix(const Matrix, int)
+Matrix unpadMatrix(const Matrix, int, int)
+void printMatrix(const Matrix, const string)
+Matrix strassenMultiplyAnySize(const Matrix, const Matrix)
+
+
+// Convert your existing matrices to Matrix type and call strassenMultiplyAnySize
+int main() {
+    srand(time(0));
+    int FirstHeight, FirstWidth, SecondWidth, hi;
+
+    //Get input for FirstHeight, FirstWidth, SecondWidth, and hi
+    cout << "Enter the height of the first matrix: ";
+    cin >> FirstHeight;
+    cout << "Enter the width of the first matrix: ";
+    cin >> FirstWidth;
+    cout << "Enter the width of the second matrix: ";
+    cin >> SecondWidth;
+    cout << "Enter the highest number in the arrays to be: ";
+    cin >> hi;
+
+    //Create both the matrices
+    Matrix A = createMatrix(FirstHeight, FirstWidth);
+    Matrix B = createMatrix(FirstWidth, SecondWidth);
+
+    // Initialize A and B with generated values below the hi
+    for (int i = 0; i < FirstHeight; ++i)
+        for (int j = 0; j < FirstWidth; ++j)
+            A[i][j] = rand() % hi + 0;
+    for (int i = 0; i < FirstWidth; ++i)
+        for (int j = 0; j < SecondWidth; ++j)
+            B[i][j] = rand() % hi + 0;
+
+    // Start timer
+    auto start = chrono::high_resolution_clock::now();
+
+    // Calculate Matrix C based on the multiplication
+    Matrix C = strassenMultiplyAnySize(A, B);
+
+    // Stop timer and record
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+
+    // Print the matrices
+    printMatrix(A, "First");
+    printMatrix(B, "Second");
+    printMatrix(C, "Results");
+
+    //Print the timer results
+    cout << "Matrix multiplication completed in " << duration.count() << " seconds.\n";
+
+    return 0;
+}
 
 // Helper function to create an empty matrix of given size
 Matrix createMatrix(int rows, int cols) {
@@ -125,47 +182,3 @@ Matrix strassenMultiplyAnySize(const Matrix &A, const Matrix &B) {
     return unpadMatrix(paddedC, A.size(), B[0].size());
 }
 
-// Convert your existing matrices to Matrix type and call strassenMultiplyAnySize
-int main() {
-    srand(time(0));
-    int FirstHeight, FirstWidth, SecondWidth, hi;
-
-    cout << "Enter the height of the first matrix: ";
-    cin >> FirstHeight;
-    cout << "Enter the width of the first matrix: ";
-    cin >> FirstWidth;
-    cout << "Enter the width of the second matrix: ";
-    cin >> SecondWidth;
-    cout << "Enter the highest number in the arrays to be: ";
-    cin >> hi;
-
-    Matrix A = createMatrix(FirstHeight, FirstWidth);
-    Matrix B = createMatrix(FirstWidth, SecondWidth);
-
-    // Initialize A and B with some values (you can replace this with manual input)
-    for (int i = 0; i < FirstHeight; ++i)
-        for (int j = 0; j < FirstWidth; ++j)
-            A[i][j] = rand() % hi + 0;  // Sample values for A
-    for (int i = 0; i < FirstWidth; ++i)
-        for (int j = 0; j < SecondWidth; ++j)
-            B[i][j] = rand() % hi + 0;  // Sample values for B
-
-    // Start timer
-    auto start = chrono::high_resolution_clock::now();
-
-    // Calculate Matrix C (result)
-    Matrix C = strassenMultiplyAnySize(A, B);
-
-    // Stop timer
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-
-
-    // Print the matrices
-    printMatrix(A, "First");
-    printMatrix(B, "Second");
-    printMatrix(C, "Results");
-    cout << "Matrix multiplication completed in " << duration.count() << " seconds.\n";
-
-    return 0;
-}
