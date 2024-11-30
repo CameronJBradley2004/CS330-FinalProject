@@ -5,7 +5,7 @@
     
 ## Types of Matrix Multiplication
   ### Naive
-  This is the most self explanatory, it goes the long way to calculate the matricies in n^3 time complexity
+  This is the most self explanatory, it goes the long way to calculate the matricies in n^3 time complexity. It computes the results by iterating through rows of the first matrix and columns of the second. Now it is as simple as basic matrix multiplication but it does have a larger cost for larger matrices. 
       
   ### Strassen
   This way cuts out one of the 8 operations making it slightly faster with an approximate n^2.806 time complexity
