@@ -3,25 +3,26 @@
 #include <cmath>
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>  // for rand() and srand()
+#include <ctime>    // for time()
 
 using namespace std;
+
 typedef vector<vector<int>> Matrix;
-Matrix createMatrix(int, int)
-Matrix add(const Matrix&, const Matrix&)
-Matrix subtract(const Matrix&, const Matrix&)
-Matrix strassen(const Matrix&, const Matrix&)
-Matrix padMatrix(const Matrix&, int)
-Matrix unpadMatrix(const Matrix&, int, int)
-void printMatrix(const Matrix&, const string)
-Matrix strassenMultiplyAnySize(const Matrix&, const Matrix&)
 
+Matrix createMatrix(int, int);
+Matrix add(const Matrix&, const Matrix&);
+Matrix subtract(const Matrix&, const Matrix&);
+Matrix strassen(const Matrix&, const Matrix&);
+Matrix padMatrix(const Matrix&, int);
+Matrix unpadMatrix(const Matrix&, int, int);
+void printMatrix(const Matrix&, const string&);
+Matrix strassenMultiplyAnySize(const Matrix&, const Matrix&);
 
-// Convert your existing matrices to Matrix type and call strassenMultiplyAnySize
 int main() {
     srand(time(0));
     int FirstHeight, FirstWidth, SecondWidth, hi;
 
-    //Get input for FirstHeight, FirstWidth, SecondWidth, and hi
     cout << "Enter the height of the first matrix: ";
     cin >> FirstHeight;
     cout << "Enter the width of the first matrix: ";
@@ -31,46 +32,35 @@ int main() {
     cout << "Enter the highest number in the arrays to be: ";
     cin >> hi;
 
-    //Create both the matrices
     Matrix A = createMatrix(FirstHeight, FirstWidth);
     Matrix B = createMatrix(FirstWidth, SecondWidth);
 
-    // Initialize A and B with generated values below the hi
     for (int i = 0; i < FirstHeight; ++i)
         for (int j = 0; j < FirstWidth; ++j)
-            A[i][j] = rand() % hi + 0;
+            A[i][j] = rand() % hi;
+
     for (int i = 0; i < FirstWidth; ++i)
         for (int j = 0; j < SecondWidth; ++j)
-            B[i][j] = rand() % hi + 0;
+            B[i][j] = rand() % hi;
 
-    // Start timer
     auto start = chrono::high_resolution_clock::now();
-
-    // Calculate Matrix C based on the multiplication
     Matrix C = strassenMultiplyAnySize(A, B);
-
-    // Stop timer and record
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
 
-
-    // Print the matrices
     printMatrix(A, "First");
     printMatrix(B, "Second");
     printMatrix(C, "Results");
 
-    //Print the timer results
     cout << "Matrix multiplication completed in " << duration.count() << " seconds.\n";
 
     return 0;
 }
 
-// Helper function to create an empty matrix of given size
 Matrix createMatrix(int rows, int cols) {
     return Matrix(rows, vector<int>(cols, 0));
 }
 
-// Add two matrices
 Matrix add(const Matrix &A, const Matrix &B) {
     int n = A.size();
     Matrix C = createMatrix(n, n);
@@ -80,7 +70,6 @@ Matrix add(const Matrix &A, const Matrix &B) {
     return C;
 }
 
-// Subtract two matrices
 Matrix subtract(const Matrix &A, const Matrix &B) {
     int n = A.size();
     Matrix C = createMatrix(n, n);
@@ -90,11 +79,10 @@ Matrix subtract(const Matrix &A, const Matrix &B) {
     return C;
 }
 
-// Recursive Strassen's algorithm
 Matrix strassen(const Matrix &A, const Matrix &B) {
     int n = A.size();
     if (n == 1) {
-        return {{A[0][0] * B[0][0]}};
+        return Matrix{{A[0][0] * B[0][0]}};
     }
 
     int newSize = n / 2;
@@ -103,7 +91,6 @@ Matrix strassen(const Matrix &A, const Matrix &B) {
     Matrix B11 = createMatrix(newSize, newSize), B12 = createMatrix(newSize, newSize),
            B21 = createMatrix(newSize, newSize), B22 = createMatrix(newSize, newSize);
 
-    // Divide matrices into 4 submatrices
     for (int i = 0; i < newSize; i++) {
         for (int j = 0; j < newSize; j++) {
             A11[i][j] = A[i][j];
@@ -118,7 +105,6 @@ Matrix strassen(const Matrix &A, const Matrix &B) {
         }
     }
 
-    // Calculate the 7 products using Strassen’s formula
     Matrix M1 = strassen(add(A11, A22), add(B11, B22));
     Matrix M2 = strassen(add(A21, A22), B11);
     Matrix M3 = strassen(A11, subtract(B12, B22));
@@ -127,7 +113,6 @@ Matrix strassen(const Matrix &A, const Matrix &B) {
     Matrix M6 = strassen(subtract(A21, A11), add(B11, B12));
     Matrix M7 = strassen(subtract(A12, A22), add(B21, B22));
 
-    // Combine the 7 products into the result matrix C
     Matrix C = createMatrix(n, n);
     for (int i = 0; i < newSize; i++) {
         for (int j = 0; j < newSize; j++) {
@@ -140,7 +125,6 @@ Matrix strassen(const Matrix &A, const Matrix &B) {
     return C;
 }
 
-// Pad matrix to the next power of 2
 Matrix padMatrix(const Matrix &A, int newSize) {
     Matrix padded = createMatrix(newSize, newSize);
     for (int i = 0; i < A.size(); ++i)
@@ -149,7 +133,6 @@ Matrix padMatrix(const Matrix &A, int newSize) {
     return padded;
 }
 
-// Unpad matrix back to original size
 Matrix unpadMatrix(const Matrix &A, int originalRows, int originalCols) {
     Matrix unpadded = createMatrix(originalRows, originalCols);
     for (int i = 0; i < originalRows; ++i)
@@ -158,7 +141,6 @@ Matrix unpadMatrix(const Matrix &A, int originalRows, int originalCols) {
     return unpadded;
 }
 
-// Function to print a matrix
 void printMatrix(const Matrix &M, const string &name) {
     cout << name << " matrix:\n";
     for (const auto &row : M) {
@@ -169,10 +151,9 @@ void printMatrix(const Matrix &M, const string &name) {
     }
 }
 
-// Main Strassen function for any size matrix
 Matrix strassenMultiplyAnySize(const Matrix &A, const Matrix &B) {
-    int maxDim = max({A.size(), A[0].size(), B.size(), B[0].size()});
-    int newSize = pow(2, ceil(log2(maxDim))); // Smallest power of 2 greater than maxDim
+    int maxDim = max(max(A.size(), A[0].size()), max(B.size(), B[0].size()));
+    int newSize = pow(2, ceil(log2(maxDim)));
 
     Matrix paddedA = padMatrix(A, newSize);
     Matrix paddedB = padMatrix(B, newSize);
@@ -181,4 +162,3 @@ Matrix strassenMultiplyAnySize(const Matrix &A, const Matrix &B) {
 
     return unpadMatrix(paddedC, A.size(), B[0].size());
 }
-
